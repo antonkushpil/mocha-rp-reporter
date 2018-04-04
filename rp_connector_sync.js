@@ -215,51 +215,50 @@ class ReportPortalClient {
         return Buffer.concat(buffers);
     }
 
-    // TODO implement sendFile function
-    // sendFile(itemId, attachmentName, level, mimeType, fileData) {
-    //
-    //     var _self = this;
-    //
-    //     var options = {
-    //         user: this.config.username, password: this.config.password,
-    //         connection: {
-    //             headers: {'User-Agent': "Node.js", "Content-Type": "application/json"},
-    //             rejectUnauthorized: false
-    //         }
-    //     };
-    //     var client = new Client(options);
-    //     var filename = attachmentName;
-    //     var boundary = Math.floor(Math.random() * 10000000000).toString();
-    //     var json = [{
-    //         item_id: itemId,
-    //         time: _self._now(),
-    //         level: level,
-    //         message: filename,
-    //         file: {name: filename}
-    //     }];
-    //     var file = {
-    //         name: filename,
-    //         type: mimeType,
-    //         content: fileData
-    //     };
-    //
-    //     var args = {
-    //         data: _self.buildMultiPartStream(json, file, boundary),
-    //         headers: {'User-Agent': "Node.js", "Content-Type": "multipart/form-data; boundary=" + boundary}
-    //     };
-    //     client.registerMethod('createLog', [_self.config.endpoint, _self.config.project, 'log'].join('/'), 'POST');
-    //
-    //     function postFile(resolve, reject){
-    //         client.methods.createLog(args, function(data, response){
-    //             resolve(data);
-    //         }).on('error', function(err){
-    //             _self.errorHandler(err);
-    //         });
-    //     };
-    //
-    //     return new Promise(postFile);
-    //
-    // };
+    sendFile(itemId, attachmentName, level, mimeType, fileData) {
+    
+        var _self = this;
+    
+        var options = {
+            user: this.config.username, password: this.config.password,
+            connection: {
+                headers: {'User-Agent': "Node.js", "Content-Type": "application/json"},
+                rejectUnauthorized: false
+            }
+        };
+        var client = new Client(options);
+        var filename = attachmentName;
+        var boundary = Math.floor(Math.random() * 10000000000).toString();
+        var json = [{
+            item_id: itemId,
+            time: _self._now(),
+            level: level,
+            message: filename,
+            file: {name: filename}
+        }];
+        var file = {
+            name: filename,
+            type: mimeType,
+            content: fileData
+        };
+    
+        var args = {
+            data: _self.buildMultiPartStream(json, file, boundary),
+            headers: {'User-Agent': "Node.js", "Content-Type": "multipart/form-data; boundary=" + boundary}
+        };
+        client.registerMethod('createLog', [_self.config.endpoint, _self.config.project, 'log'].join('/'), 'POST');
+    
+        function postFile(resolve, reject){
+            client.methods.createLog(args, function(data, response){
+                resolve(data);
+            }).on('error', function(err){
+                _self.errorHandler(err);
+            });
+        };
+    
+        return new Promise(postFile);
+    
+    };
 }
 
 module.exports = ReportPortalClient;
